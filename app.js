@@ -1,3 +1,6 @@
+/* eslint-disable consistent-return */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-undef */
 /* eslint-disable camelcase */
 
 /* eslint-disable no-console */
@@ -193,7 +196,7 @@ app.post('/api/post/users', (req, res, next) => {
   pool.query(text, values).then(
     () => {
       res.status(201).json({
-        message: 'User added successfully!'
+        message: 'User added successfully!',
       });
     },
   ).catch(
@@ -204,49 +207,48 @@ app.post('/api/post/users', (req, res, next) => {
     },
   );
 });
-app.get('/api/get/users',(req, res, next) => {
-  const text = 'SELECT * FROM users WHERE username = $1'
-  //const values = ['sensoen']
+app.get('/api/get/users', (req, res, next) => {
+  const text = 'SELECT * FROM users WHERE username = $1';
+  // const values = ['sensoen']
   pool.query(text, 'seu')
-  .then(
-      ({rows}) => {
-
+    .then(
+      ({ rows }) => {
         if (!rows[0]) {
           return res.status(401).json({
-            error: new Error('User not found!')
+            error: new Error('User not found!'),
           });
         }
         bcrypt.compare('goiu', row.password).then(
           (valid) => {
             if (!valid) {
               return res.status(401).json({
-                error: new Error('Incorrect password!')
+                error: new Error('Incorrect password!'),
               });
             }
             const token = jwt.sign(
-            {userId:row._id},
-            'random-token-secret',
-            {expiresIn: '24'}
+              { userId: row._id },
+              'random-token-secret',
+              { expiresIn: '24' },
             );
             res.status(200).json({
               userId: user._id,
-              token: token
+              token,
             });
-          }
+          },
         ).catch(
           (error) => {
             res.status(500).json({
-              error: error
+              error,
             });
-          }
+          },
         );
-      }
+      },
     ).catch(
       (error) => {
         res.status(500).json({
-          error: error
+          error,
         });
-      }
-    )
+      },
+    );
 });
 module.exports = app;
